@@ -24,7 +24,7 @@ public class WebServer {
 			System.err.println("ERROR : Argument on the command line");
 			return;
 		}
-		maxThreads = args[0];
+		maxThreads = Integer.parseInt(args[0]);//args[0];
 
 		try {
 			ss = new ServerSocket(nbPort);
@@ -38,25 +38,22 @@ public class WebServer {
 		System.out.println("+ SERVER CONNECTED + \n");
 		
 		// Manage multiple requests
-		ExecutorService service = Executors.newFixedThreadPool(int maxThreads);
+		ExecutorService service = Executors.newFixedThreadPool(maxThreads);
 		int nw = 1;
 
-		
-		while (true){
-
-			try{
+		try{
+			while (true){
 				// Wait for connection
 				Socket ws = ss.accept();
 				ws.setSoTimeout(1000);
 				service.execute(new Worker(ws, nw));
 				nw++;
 			}
-			
-			catch (IOException e2) {
-				System.err.println("Failed to accept connection: ");
-				e2.printStackTrace();
-				System.exit(2);
-			}
+		}	
+		catch (IOException e2) {
+			System.err.println("Failed to accept connection: ");
+			e2.printStackTrace();
+			System.exit(2);
 		}		 
 		
 		// Close the connections and streams
@@ -72,5 +69,5 @@ public class WebServer {
 	}
 }
 
-
-
+			
+			

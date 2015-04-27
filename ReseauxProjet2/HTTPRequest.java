@@ -14,7 +14,7 @@ public class HTTPRequest {
 	
 	private String header; // message without the first line
 	private String splitString[] = null;
-	private final static int sizeBuffer = 64;
+	private final static int sizeBuffer = 164;
 	private String log;
 	private String pass;
 	// Http Code
@@ -57,10 +57,14 @@ public class HTTPRequest {
 					// Decomposition of the request
 					request = bufferString.substring(0, bufferString.indexOf("\r\n\r\n") + 4);
 					// Check if the request of client finish with "\r\n\r\n" or not
-					if (!bufferString.endsWith("\r\n\r\n"))
-						bufferString = bufferString.substring(bufferString.indexOf("\r\n\r\n") + 4, bufferString.length());
-					else
+					if (!bufferString.endsWith("\r\n\r\n")){
+						//System.out.println("TEST3 : " + bufferString);
+						bufferString = bufferString.substring(bufferString.indexOf("\r\n\r\n") + 4);
+					}
+					else{
 						bufferString = "";
+						//System.out.println("TEST2 : " + bufferString);
+					}
 					
 					// request = HTTP request + header : So we decompose
 					splitRequest(request);
@@ -70,14 +74,16 @@ public class HTTPRequest {
 					System.out.println("bufferString : " + bufferString);
 					System.out.println("header : " +request);
 
-					if(isPostRequest)
+					if(isPostRequest) {
 						bodyRequest(bufferString);
+						break;
+					}
 
 
 					if (bufferString.equals("")) {
 		        		if (!isPostRequest)
 		        			break;
-		        		else if (blankLinesCount > 0)
+		        		else if (isPostRequest)
 		        			break;
 		        		else {
 		        			blankLinesCount += 1;
@@ -92,12 +98,7 @@ public class HTTPRequest {
 						System.out.println("Close worker number");
 						break;
 					}
-					// Additional time
-					if (!s.getKeepAlive()){
-						s.setSoTimeout(5000);
-						System.out.println("Asked to be kept alive");
-						s.setKeepAlive(true);
-					}
+
 			}
 
 		} 
@@ -111,10 +112,15 @@ public class HTTPRequest {
 	/*  Split HTTP request  */
 	public void splitRequest(String msg){
 
+		// Take the first line of the request :
 		// Computation of regex
-		Pattern p = Pattern.compile(" ");
-		// Split into subStrings
-		splitString = p.split(msg);
+		Pattern p = Pattern.compile("\r\n");
+		String linesRequest[] = null;
+		linesRequest = p.split(msg);
+		// Sparse first line :
+		Pattern p2 = Pattern.compile(" ");
+		splitString = p2.split(linesRequest[0]);
+
 	}
 
 
@@ -132,8 +138,6 @@ public class HTTPRequest {
 	/*  Check validity of request  */
 	public String checkRequest(){
 		
-		System.out.println("TEST : " + getMethod());
-
 		if ( ! (getMethod().equals("GET") || getMethod().equals("POST")) ) { return notImplemented; }
 		else if (! (getURL().startsWith("/") || getHeader().contains("Host")) ) { return badRequest; }
 		else if (!getVersion().equals("HTTP/1.1")) { return httpVersionNotSupported; }
@@ -146,10 +150,27 @@ public class HTTPRequest {
 
 	public void bodyRequest(String body){
 
-		log = body.substring(body.indexOf("=")+1, body.indexOf("&"));
-		pass = body.substring(body.lastIndexOf("=")+1, body.length());
-		//System.out.println("log : " +log);
-		//System.out.println("pass : " +pass);
+		// Computation of regex
+		Pattern p = Pattern.compile("&");
+		String extract1[] = null;
+		extract1 = p.split(body); // extract1[0] = "login=XXX" - extract1[1] = "pass=XXX" 
+		// login
+		Pattern p2 = Pattern.compile("=");
+		String extract2[] = null;
+		extract2 = p2.split(extract1[0]);
+		log = extract2[1];
+		// password
+		Pattern p3 = Pattern.compile("=");
+		String extract3[] = null;
+		extract3 = p3.split(extract1[1]);
+		pass = extract3[1];
+
+
+
+		//log = body.substring(body.indexOf("=")+1, body.indexOf("&"));
+		//pass = body.substring(body.lastIndexOf("=")+1, body.length());
+		System.out.println("log : " +log);
+		System.out.println("pass : " +pass);
 
 	}
 	

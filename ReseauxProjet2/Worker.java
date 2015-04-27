@@ -1,6 +1,7 @@
 
 import java.net.*;
 import java.io.*;
+import java.util.*;
 import java.lang.Thread;
 
 /**
@@ -13,21 +14,20 @@ public class Worker extends Thread{
     
     Socket s;
     private int NumWorker;
-    private String request = "", bufferString = "";
-    private String reply = "";
-    private static int sizeBuffer = 64;
-    private int signIn;
 
-    //private Sessions user;
-    String log = null, pass = null;
+    // format reponse
+    HTTPReply rep;
+    // Session user
+    private Sessions user;
+
 
 
     /*  Constructor  */
-    Worker(Socket _s, int nw) {
-        s=_s;
+    Worker(Socket s, int nw) {
+        this.s = s;
         NumWorker = nw; 
-        signIn = 1;
-        //user = new Sessions(_s); 
+        rep = new HTTPReply();
+        user = new Sessions(); 
     }
 
     
@@ -40,52 +40,52 @@ public class Worker extends Thread{
             OutputStream out = s.getOutputStream();
             InputStream in = s.getInputStream();
         
-while(true){
-            // Get HTTP request from browser
-            HTTPRequest h = new HTTPRequest(s);
+
+            // Read HTTP request from browser
+            HTTPRequest req = new HTTPRequest(s);
             // Check validity of request
-            if (h.checkRequest() != "200 OK"){
-                // BAD REQUEST ==>>> TO MANAGE
-                System.out.println("BAD REQUEST : " + h.checkRequest());
+            if (req.checkRequest() != "200 OK"){
+                System.out.println("BAD REQUEST : " + req.checkRequest());
+            }
+
+            // STEP 1 :
+            // On renvoit la page index ===>>> quelque soit la requete (avant identification)
+            if (req.getMethod().equals("GET")) { // Oblige de rajouter ce If car sinon affiche 2x la page pour POST
+            String f = rep.getForm(" ");
+            out.write(f.getBytes(), 0, (f.getBytes()).length);
+            out.flush();
             }
 
 
-            // STEP 1 : Client authentification ==>>> on arrive ici quelque soit la requete
-             HTTPReply rep = new HTTPReply();
-             String f = rep.getForm();
-             out.write(f.getBytes(), 0, (f.getBytes()).length);
-             out.flush();
-             // La reponse recue est du type : login=marine&pass=test
+            // STEP 2 : Client authentification
+            if (req.getMethod().equals("POST")) {
+                // Check account
+                if ( user.identification(req.getLog(), req.getPass()) == 2 ){
+                    System.out.println("Wrong password");
+                    String f = rep.getForm("Wrong password");
+                    out.write(f.getBytes(), 0, (f.getBytes()).length);
+                    out.flush();
+                } else if ( user.identification(req.getLog(), req.getPass()) == 3 ){
+                    System.out.println("Wrong login");
+                    String f = rep.getForm("Wrong login");
+                    out.write(f.getBytes(), 0, (f.getBytes()).length);
+                    out.flush();
+                }
+                else { // ok
+                    System.out.println("C'est OK ");
+                    // afficher la page suivante
+                    String f = rep.getForm(" ");
+                    out.write(f.getBytes(), 0, (f.getBytes()).length);
+                    out.flush();
+                }
+            }
+
+             
 
 
-             // STEP 2 : Reception login
-             HTTPRequest log = new HTTPRequest(s);
-             String logreq = log.getRequest();
-             String logheader = log.getHeader();
-             System.out.println("log req : " + logreq);
-             System.out.println("log header : " + logheader);
-
-
-                    if (signIn == 1){
-                        // VERIFIER SI VALABLE => Si oui, signIn = 0
-                        //                          Sinon : boucler
-                    }
 
 
 
-                    // Check keep alive
-                    if (!request.contains("Connection: keep-alive")) { 
-                        System.out.println("Close worker number : " + NumWorker);
- //                       break;
-                    }
-                    
-                    // Additional time
-                    if (!s.getKeepAlive()){
-                        s.setSoTimeout(5000);
-                        System.out.println("Asked to be kept alive");
-                        s.setKeepAlive(true);
-                    }  
-} 
 
         }
         catch (SocketTimeoutException e1) {

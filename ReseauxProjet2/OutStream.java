@@ -1,3 +1,6 @@
+import java.net.*;
+import java.io.*;
+import java.io.ObjectOutputStream;
 
 public class OutStream {
 
@@ -19,7 +22,7 @@ public class OutStream {
 
 
 	// Send String
-	public void sendString(String msg) throws ConnectionLostException{
+	public void sendString(String msg){
 		
 		try {
 			out.writeObject(msg);

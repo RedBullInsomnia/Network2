@@ -58,17 +58,17 @@ public class HTTPReply {
 
 
 	/*  Submit form  */
-	public String getForm(){
+	public String getForm(String test){
 
 		String f = htmlHeader()
 					+ htmlHeaderTop("Identification")
 					+ htmlHeaderBody("Identification", "Please, provide your login and password :")
-					+ form()
+					+ form(test)
 					+ htmlHeaderDown();
 		return f;
 	}
 
-	public String form(){
+	public String form(String test){
 
 		String form = "<!DOCTYPE html> \r\n"
 					+ "<html> \r\n"
@@ -82,14 +82,18 @@ public class HTTPReply {
 					+ "<br><br>\r\n"
 					+ "<input type=\"submit\" value=\"Submit\">\r\n"
 					+ "</form> \r\n"
-					+ "<p>If you click \"Submit\", the form-data will be sent to a page called \"identification.html\".</p>\r\n"
-					+ "<p>The first name will not be submitted, because the input element does not have a name attribute.</p>\r\n"
+					//+ "<p>If you click \"Submit\", the form-data will be sent to a page called \"identification.html\".</p>\r\n"
+					+ "<p>" + test + "</p>\r\n"
 					+ "</body>\r\n"
 					+ "</html>\r\n";
 
 		return form;
 	}
 
+/*	public String viewPosts(){
+		
+	}
+*/
 
 
 

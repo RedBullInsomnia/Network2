@@ -8,7 +8,6 @@ public class Request {
 	
 	private static String msg; // message to check
 	private static String splitString[] = null;
-	//private static final int nbPort = 8246;
 
 	// Http Code
 	static String ok = "200 OK";
@@ -62,9 +61,8 @@ public class Request {
 	 */
 	public boolean compareMethod(String req){
 		
-		if(	(req.compareTo("GET") == 0) || (req.compareTo("POST") == 0) ){
+		if (req.compareTo("GET") == 0 || req.compareTo("POST") == 0)
 			return true;
-		}
 		else
 			return false;
 	}

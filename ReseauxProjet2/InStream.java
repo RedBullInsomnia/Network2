@@ -1,3 +1,5 @@
+import java.net.*;
+import java.io.*;
 
 public class InStream {
 
@@ -19,13 +21,20 @@ public class InStream {
 
 
 	// Read String
-	public String readString() throws ConnectionLostException{
-		String msg = new String;
+	public String readString(){
+		String msg = new String();
 		
 		try {
 			msg = (String) in.readObject();
 		} 
-		catch (IOException e) { } 
+		catch (ClassNotFoundException e) { 
+			System.err.println("InStream : readString failed");
+			System.exit(1);
+		} 
+		catch (IOException e) { 
+			System.err.println("InStream : readString failed");
+			System.exit(1);
+		} 
 		
 		return msg;
 	}

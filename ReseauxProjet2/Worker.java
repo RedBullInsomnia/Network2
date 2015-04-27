@@ -51,7 +51,7 @@ public class Worker extends Thread{
             // STEP 1 :
             // On renvoit la page index ===>>> quelque soit la requete (avant identification)
             if (req.getMethod().equals("GET")) { // Oblige de rajouter ce If car sinon affiche 2x la page pour POST
-            String f = rep.getForm(" ");
+            String f = rep.getForm(" ", false, " ");
             out.write(f.getBytes(), 0, (f.getBytes()).length);
             out.flush();
             }
@@ -62,19 +62,23 @@ public class Worker extends Thread{
                 // Check account
                 if ( user.identification(req.getLog(), req.getPass()) == 2 ){
                     System.out.println("Wrong password");
-                    String f = rep.getForm("Wrong password");
+                    String f = rep.getForm("Wrong password", false, " ");
                     out.write(f.getBytes(), 0, (f.getBytes()).length);
                     out.flush();
                 } else if ( user.identification(req.getLog(), req.getPass()) == 3 ){
                     System.out.println("Wrong login");
-                    String f = rep.getForm("Wrong login");
+                    String f = rep.getForm("Wrong login", false, " ");
                     out.write(f.getBytes(), 0, (f.getBytes()).length);
                     out.flush();
                 }
                 else { // ok
                     System.out.println("C'est OK ");
+                    // Cookie
+                    Cookies cook = new Cookies();
+                    String compl = cook.setCookie(req.getLog(), cook.getCookie(req.getLog()));
                     // afficher la page suivante
-                    String f = rep.getForm(" ");
+                    String f = rep.getForm(" ", true, compl);
+                    //System.out.println("la reponse est : " +f);
                     out.write(f.getBytes(), 0, (f.getBytes()).length);
                     out.flush();
                 }

@@ -36,6 +36,7 @@ public class Sessions {
 		if (accounts.get(log) != null && accounts.get(log).equals(pass)){
 			//Cookie ID = new Cookie(log, pas); // Comment associer le meme cookie pour le meme navigateur ?
 			//getCookie(?, ?);
+			
 			return 0;
 		}
 		// Wrong login

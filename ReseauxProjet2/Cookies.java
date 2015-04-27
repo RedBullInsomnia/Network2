@@ -18,11 +18,9 @@ public class Cookies {
 	/*  getCookie */
 	public UUID getCookie(String key){
 
-		if (cook.containsKey(key)){ // A cookie already exists
-			return null; // return cook.get(key);
-		}
+		if (!cook.containsKey(key)) 
+			cook.put(key, randomID()); // Created a new cookie value
 
-		cook.put(key, randomID()); // Created a new cookie value
 		return cook.get(key);
 	}
 

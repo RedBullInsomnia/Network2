@@ -16,14 +16,21 @@ public class HTTPReply {
 
 
 	/*  HTML header DOWN */
-	public String htmlHeader(){
+	public String htmlHeader(boolean extra, String compl){
 		
 		String r0 = "HTTP/1.1" + " 200 OK " + "\r\n"
 				+ "Server : Web Server \r\n"
-				+ "Content-Type: text/html \r\n\r\n";
+				+ "Content-Type: text/html \r\n";
 				//+ "Content-Length: " + rep.getBytes().length + "\r\n\r\n";
+		if (extra)
+			r0+= compl;
+
+		r0+= "\r\n\r\n";
+
 		return r0;
 	}
+
+
 	/*  HTML header TOP */
 	public String htmlHeaderTop(String title){
 
@@ -34,6 +41,8 @@ public class HTTPReply {
 				+ "</HEAD>\r\n";
 		return r1;
 	}
+
+
 	/*  HTML header DOWN */
 	public String htmlHeaderDown(){
 
@@ -42,6 +51,8 @@ public class HTTPReply {
 				+ "</HTML> \r\n";
 		return r3;
 	}
+
+
 	/*  HTML header BODY */
 	public String htmlHeaderBody(String title, String sentence){
 
@@ -58,9 +69,9 @@ public class HTTPReply {
 
 
 	/*  Submit form  */
-	public String getForm(String test){
+	public String getForm(String test, boolean extra, String compl){
 
-		String f = htmlHeader()
+		String f = htmlHeader(extra, compl)
 					+ htmlHeaderTop("Identification")
 					+ htmlHeaderBody("Identification", "Please, provide your login and password :")
 					+ form(test)
@@ -90,10 +101,26 @@ public class HTTPReply {
 		return form;
 	}
 
-/*	public String viewPosts(){
-		
+
+
+
+
+
+	public String viewPost(){
+
+		String header = htmlHeader(false, " ");
+
+		String msg = "<!DOCTYPE html> \r\n"
+					+ "<html> \r\n"
+					+ "<body> \r\n"
+					+ "<p>Bonjour, je teste.</p> \r\n"
+					+ "<p>M'as-tu vu?.</p> \r\n"
+					+ "</body> \r\n"
+					+ "</html> \r\n\r\n";
+
+		return (header + msg);
 	}
-*/
+
 
 
 

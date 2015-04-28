@@ -108,7 +108,7 @@ public class HTTPReply {
 
 	public String viewPost(){
 
-		String header = htmlHeader(false, " ");
+
 
 		String msg = "<!DOCTYPE html> \r\n"
 					+ "<html> \r\n"
@@ -118,7 +118,15 @@ public class HTTPReply {
 					+ "</body> \r\n"
 					+ "</html> \r\n\r\n";
 
-		return (header + msg);
+		String header = htmlHeader(false, " ")
+						+ htmlHeaderTop("ViewPosts")
+						+ htmlHeaderBody("ViewPosts", "The ten last posts are  :")
+						+ msg
+						+ htmlHeaderDown();
+
+
+
+		return header;
 	}
 
 

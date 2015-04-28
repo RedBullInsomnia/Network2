@@ -77,7 +77,8 @@ public class Worker extends Thread{
                     Cookies cook = new Cookies();
                     String compl = cook.setCookie(req.getLog(), cook.getCookie(req.getLog()));
                     // afficher la page suivante
-                    String f = rep.getForm(" ", true, compl);
+                    //String f = rep.getForm(" ", true, compl);
+                    String f = rep.viewPost();
                     //System.out.println("la reponse est : " +f);
                     out.write(f.getBytes(), 0, (f.getBytes()).length);
                     out.flush();

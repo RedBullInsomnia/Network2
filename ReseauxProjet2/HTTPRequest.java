@@ -17,6 +17,7 @@ public class HTTPRequest {
 	private final static int sizeBuffer = 164;
 	private String log;
 	private String pass;
+	private Messages postMessages;
 	// Http Code
 	static String ok = "200 OK";
 	static String badRequest = "400 Bad Request";
@@ -30,6 +31,7 @@ public class HTTPRequest {
 		log = new String();
 		pass = new String();
 		getRequest(s);
+		postMessages = new Messages();
 	}
 
 
@@ -150,20 +152,48 @@ public class HTTPRequest {
 
 	public void bodyRequest(String body){
 
-		// Computation of regex
-		Pattern p = Pattern.compile("&");
-		String extract1[] = null;
-		extract1 = p.split(body); // extract1[0] = "login=XXX" - extract1[1] = "pass=XXX" 
-		// login
-		Pattern p2 = Pattern.compile("=");
-		String extract2[] = null;
-		extract2 = p2.split(extract1[0]);
-		log = extract2[1];
-		// password
-		Pattern p3 = Pattern.compile("=");
-		String extract3[] = null;
-		extract3 = p3.split(extract1[1]);
-		pass = extract3[1];
+		Pattern pat = Pattern.compile("=");
+		String test[] = null;
+		test = pat.split(body);
+		
+		// Login and password
+		if (test[0].equals("login"))
+		{
+			// Computation of regex
+			Pattern p = Pattern.compile("&");
+			String extract1[] = null;
+			extract1 = p.split(body); // extract1[0] = "login=XXX" - extract1[1] = "pass=XXX" 
+			// login
+			Pattern p2 = Pattern.compile("=");
+			String extract2[] = null;
+			extract2 = p2.split(extract1[0]);
+			log = extract2[1];
+			// password
+			Pattern p3 = Pattern.compile("=");
+			String extract3[] = null;
+			extract3 = p3.split(extract1[1]);
+			pass = extract3[1];
+		}
+
+		// New message
+		else if (test[0].equals("comment"))
+		{
+			Pattern p4 = Pattern.compile("\\+");
+			String extract4[] = null;
+			extract4 = p4.split(test[1]);
+
+			// new message
+			String newMessage = new String();
+			for(int i = 0; i<extract4.length ; ++i)
+			{
+				newMessage+= extract4[i];
+			}
+			// envoyer le message à la classe message
+			postMessages.addMessage(newMessage);
+		}
+
+		else
+			System.out.println("It's a problem !");
 	}
 	
 
@@ -193,6 +223,9 @@ public class HTTPRequest {
 
 	public String getPass(){
 		return pass;
+	}
+	public String[] getMessages(){
+		return postMessages.getMessages();
 	}
 
 

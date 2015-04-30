@@ -6,10 +6,12 @@ JC = javac
 
 CLASSES = \
 	Worker.java \
-	Request.java \
-	EchoServer.java \
-	EchoClient.java \
-	Reply.java \
+	WebServer.java \
+	HTTPReply.java \
+	HTTPRequest.java \
+	Sessions.java \
+	Cookies.java \
+	Messages.java \
 
 default: classes
 

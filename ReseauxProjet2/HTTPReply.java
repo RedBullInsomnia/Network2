@@ -97,42 +97,72 @@ public class HTTPReply {
 
 
 	/*  viewPosts  */
-	public String getViewPosts(){
+	public String getViewPosts(String[] listMessages){
 
 		String posts = statusLine(false, " ")
 						+ bodyTop("ViewPosts", "The ten last posts are  :")
-						+ viewPosts()
+						+ viewPosts(listMessages)
 						+ bodyDown();
 		return posts;
 	}
 	/*  Display messages  */
-	public String viewPosts(){
-
-		Messages chat = new Messages();
-		String[] temp = chat.getMessages();
-		System.out.println("CHAT : " + temp[0]);
-
+	public String viewPosts(String[] listMessages){
 
 		String msg = "<!DOCTYPE html> \r\n"
 					+ "<html> \r\n"
 					+ "<body> \r\n"
 					+ "<form action=\"viewPosts.html\"> \r\n" 
-        		//	+ "<form action=\"viewPosts.html\" id=\"usrform\"> \r\n"
-  				//	+ "<input type=\"submit\"> \r\n"
-				//	+ "</form> \r\n"
-				//	+ "<br> \r\n"
-        		//	+ "<textarea rows=\"4\" cols=\"50\" name=\"comment\" form=\"usrform\">\r\n"
-				//	+ "Enter text here...</textarea>\r\n"
-					+ "<p>Bonjour, je teste.</p> \r\n"
-					+ "<p>M'as-tu vu?.</p> \r\n"
-				//	+ "<p> "
-				//	+ temp[0]
-				//	+ "</p> \r\n"
-					+ "<a href=\"http://localhost:8001/postMessage.html\">New message</a>\r\n"
+					+ "<p> ";
+		for (int i=0; i<listMessages.length; i++)
+				msg += listMessages[i] + "</p> \r\n";
+
+		String msgNext	= "<a href=\"http://localhost:8001/postMessage.html\">New message</a>\r\n"
+						+ "</body> \r\n"
+						+ "</html> \r\n";
+
+		return (msg + msgNext);
+	}
+
+
+
+	/*  postMessage  */
+	public String getPostMessage(){
+
+		String st = statusLine(false, " ")
+						+ bodyTop("PostMessage", "Enter a new message :")
+						+ postMessage()
+						+ bodyDown();
+		return st;
+	}
+	/*  body postMessage  */
+	public String postMessage(){
+
+		String msg = "<!DOCTYPE html> \r\n"
+					+ "<html> \r\n"
+					+ "<body> \r\n"
+					+ "<form action=\"viewPosts.html\" id=\"usrform\" method=\"POST\">\r\n"
+  					+ "<input type=\"submit\"> \r\n"
+					+ "</form> \r\n"
+					+ "<br> \r\n"
+        			+ "<textarea rows=\"4\" cols=\"50\" name=\"comment\" form=\"usrform\">\r\n"
+					+ "Enter text here...</textarea>\r\n"
 					+ "</body> \r\n"
 					+ "</html> \r\n";
 
 		return msg;
+	}
+
+
+
+
+
+	/*  Page not implemented  */
+	public String getNotImplemented(){
+
+		String f = statusLine(false, "")
+					+ bodyTop("Sorry", "This HTML page is not implemented")
+					+ bodyDown();
+		return f;
 	}
 
 

@@ -50,56 +50,78 @@ public class Worker extends Thread{
                 System.out.println("BAD REQUEST : " + req.checkRequest());
             }
 
-            // STEP 1 :
-            // On renvoit la page index ===>>> quelque soit la requete (avant identification)
-            if ( req.getMethod().equals("GET") ) { // Oblige de rajouter ce If car sinon affiche 2x la page pour POST
-            String f = rep.getLogIn(" ", false, " ");
-            out.write(f.getBytes(), 0, (f.getBytes()).length);
-            out.flush();
+
+            // New test : GET
+            if ( req.getMethod().equals("GET") )
+            {
+                if ( req.getURL().equals("/") || req.getURL().equals("/identification.html") )
+                {
+                    String f = rep.getLogIn(" ", false, " ");
+                    out.write(f.getBytes(), 0, (f.getBytes()).length);
+                    out.flush();      
+                }
+                else if ( req.getURL().equals("/viewPosts.html") )
+                {
+
+                }
+                else if ( req.getURL().equals("/postMessage.html") )
+                {
+                    String f = rep.getPostMessage();
+                    out.write(f.getBytes(), 0, (f.getBytes()).length);
+                    out.flush();
+                }
+                else
+                {
+                    System.out.println("Page not implemented");
+                    String f = rep.getNotImplemented();
+                    out.write(f.getBytes(), 0, (f.getBytes()).length);
+                    out.flush();
+                }
             }
 
 
-            // STEP 2 : 
-            // Client authentification
-            if (req.getMethod().equals("POST")) {
+            // POST
+             if (req.getMethod().equals("POST")) {
                 
-                // Check account :
+                if ( req.getURL().equals("/viewPosts.html") )
+                {
+                    // Check account :
+                        if ( user.identification(req.getLog(), req.getPass()) == 2 )
+                        {
+                            System.out.println("Wrong password");
+                            String f = rep.getLogIn("Wrong password", false, " ");
+                            out.write(f.getBytes(), 0, (f.getBytes()).length);
+                            out.flush();
+                        }
+                        else if ( user.identification(req.getLog(), req.getPass()) == 3 )
+                        {
+                            System.out.println("Wrong login");
+                            String f = rep.getLogIn("Wrong login", false, " ");
+                            out.write(f.getBytes(), 0, (f.getBytes()).length);
+                            out.flush();
+                        }
+                        else { // ok
+                            System.out.println("It's OK ");
+                            // Cookie
+                            Cookies cook = new Cookies();
+                            String compl = cook.setCookie(req.getLog(), cook.getCookie(req.getLog()));
+                            // afficher la page suivante
 
-                if ( user.identification(req.getLog(), req.getPass()) == 2 ){
-                    System.out.println("Wrong password");
-                    String f = rep.getLogIn("Wrong password", false, " ");
-                    out.write(f.getBytes(), 0, (f.getBytes()).length);
-                    out.flush();
+                            String f = rep.getViewPosts(req.getMessages());
+                            //System.out.println("la reponse est : " +f);
+                            out.write(f.getBytes(), 0, (f.getBytes()).length);
+                            out.flush();
+                        }
                 }
-                else if ( user.identification(req.getLog(), req.getPass()) == 3 ){
-                    System.out.println("Wrong login");
-                    String f = rep.getLogIn("Wrong login", false, " ");
-                    out.write(f.getBytes(), 0, (f.getBytes()).length);
-                    out.flush();
+                else if ( req.getURL().equals("/postMessage.html") )
+                {
+
                 }
-                else { // ok
-                    System.out.println("It's OK ");
-                    // Cookie
-                    Cookies cook = new Cookies();
-                    String compl = cook.setCookie(req.getLog(), cook.getCookie(req.getLog()));
-                    // afficher la page suivante
-
-                    // TEST Class Message :
-                    //Messages msg = new Messages();
-                    //msg.addMessage(" Ceci est un long message, parce c'est un test, j'espere que vous apprécierez tous les caractères spéciaux ");
-                                        //+ "tel que & ou 1 ou * ou encore % ! ");
-                    // End test
-
-
-
-                    String f = rep.getViewPosts();
-                    //System.out.println("la reponse est : " +f);
-                    out.write(f.getBytes(), 0, (f.getBytes()).length);
-                    out.flush();
-                }
+                
             }
 
-             
+
+
 
 
 

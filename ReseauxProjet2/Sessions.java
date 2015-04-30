@@ -50,18 +50,6 @@ public class Sessions {
 	}
 
 
-	/* cookie */
-/*	public void SendCookie() {
-		URL url = new URL("http://localhost:8001");
-		URLConnection conn = url.openConnection();
-
-		// Set the cookie value to send
-		conn.setRequestProperty("Cookie", "name1=value1; name2=value2");
-
-		// Send the request to the server
-		conn.connect();
-	}
-*/
 
 
 

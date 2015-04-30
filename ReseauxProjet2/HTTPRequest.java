@@ -164,14 +164,6 @@ public class HTTPRequest {
 		String extract3[] = null;
 		extract3 = p3.split(extract1[1]);
 		pass = extract3[1];
-
-
-
-		//log = body.substring(body.indexOf("=")+1, body.indexOf("&"));
-		//pass = body.substring(body.lastIndexOf("=")+1, body.length());
-		System.out.println("log : " +log);
-		System.out.println("pass : " +pass);
-
 	}
 	
 

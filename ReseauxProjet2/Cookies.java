@@ -46,7 +46,7 @@ public class Cookies {
 
 	// ====>>>>>>>>>>>>>>> NON USED ???
 	/*  deleteCookie  */
-	public String deleteCookie(){
+	public String deleteCookie(String key){
 
 		String header = "Set-Cookie: " + key + "=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 		return header;

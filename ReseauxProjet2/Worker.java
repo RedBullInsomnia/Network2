@@ -22,6 +22,7 @@ public class Worker extends Thread{
 
 
 
+
     /*  Constructor  */
     Worker(Socket s, int nw) {
         this.s = s;
@@ -43,6 +44,7 @@ public class Worker extends Thread{
 
             // Read HTTP request from browser
             HTTPRequest req = new HTTPRequest(s);
+
             // Check validity of request
             if (req.checkRequest() != "200 OK"){
                 System.out.println("BAD REQUEST : " + req.checkRequest());
@@ -50,35 +52,47 @@ public class Worker extends Thread{
 
             // STEP 1 :
             // On renvoit la page index ===>>> quelque soit la requete (avant identification)
-            if (req.getMethod().equals("GET")) { // Oblige de rajouter ce If car sinon affiche 2x la page pour POST
-            String f = rep.getForm(" ", false, " ");
+            if ( req.getMethod().equals("GET") ) { // Oblige de rajouter ce If car sinon affiche 2x la page pour POST
+            String f = rep.getLogIn(" ", false, " ");
             out.write(f.getBytes(), 0, (f.getBytes()).length);
             out.flush();
             }
 
 
-            // STEP 2 : Client authentification
+            // STEP 2 : 
+            // Client authentification
             if (req.getMethod().equals("POST")) {
-                // Check account
+                
+                // Check account :
+
                 if ( user.identification(req.getLog(), req.getPass()) == 2 ){
                     System.out.println("Wrong password");
-                    String f = rep.getForm("Wrong password", false, " ");
+                    String f = rep.getLogIn("Wrong password", false, " ");
                     out.write(f.getBytes(), 0, (f.getBytes()).length);
                     out.flush();
-                } else if ( user.identification(req.getLog(), req.getPass()) == 3 ){
+                }
+                else if ( user.identification(req.getLog(), req.getPass()) == 3 ){
                     System.out.println("Wrong login");
-                    String f = rep.getForm("Wrong login", false, " ");
+                    String f = rep.getLogIn("Wrong login", false, " ");
                     out.write(f.getBytes(), 0, (f.getBytes()).length);
                     out.flush();
                 }
                 else { // ok
-                    System.out.println("C'est OK ");
+                    System.out.println("It's OK ");
                     // Cookie
                     Cookies cook = new Cookies();
                     String compl = cook.setCookie(req.getLog(), cook.getCookie(req.getLog()));
                     // afficher la page suivante
-                    //String f = rep.getForm(" ", true, compl);
-                    String f = rep.viewPost();
+
+                    // TEST Class Message :
+                    //Messages msg = new Messages();
+                    //msg.addMessage(" Ceci est un long message, parce c'est un test, j'espere que vous apprécierez tous les caractères spéciaux ");
+                                        //+ "tel que & ou 1 ou * ou encore % ! ");
+                    // End test
+
+
+
+                    String f = rep.getViewPosts();
                     //System.out.println("la reponse est : " +f);
                     out.write(f.getBytes(), 0, (f.getBytes()).length);
                     out.flush();

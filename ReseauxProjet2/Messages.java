@@ -12,33 +12,40 @@ public class Messages {
 	public static int index;
 
 	/*  Constructor  */
-	public messages(){
+	Messages(){
 
 		size = MAXMESSAGES;
 		index = 0;
-		msg = new String[size];
+		msg = new String[MAXMESSAGES];
 	}
 
 
 	/*  addMessage  */
-	public void addMessage(String element) {
+	public static void addMessage(String element) {
 
 		if (index == MAXMESSAGES)
-			incresedSize();
+			increasedSize();
 
-		msg[index] = element;
+		msg[index] = new String (element); 
 		index++;
 	}
 
 
+	/*  getMessages  */
+	public static String[] getMessages() {
+		return msg;
+	}
+
+
 	/*  increasedsize  */
-	public void increasedSize(){
+	public static void increasedSize(){
 
 		size+= MAXMESSAGES;
-		int[] temp = new String[size];
+		//int[] temp = new String[size];
+		String[] temp = new String[20]; /////// !!!!!!! A SUPPRIMER
 
 		// Copy
-        for (int =0;i<msg.length;i++)
+        for (int i=0; i<msg.length; i++)
                temp[i] = msg[i];
 
         msg = temp;
@@ -46,7 +53,7 @@ public class Messages {
 
 
 	/*  getLastIndex  */
-	public int getLastIndex(){
+	public static int getLastIndex(){
 		return index;
 	}
 

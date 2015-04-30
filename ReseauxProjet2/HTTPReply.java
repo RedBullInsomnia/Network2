@@ -15,8 +15,8 @@ public class HTTPReply {
 	}	
 
 
-	/*  HTML header DOWN */
-	public String htmlHeader(boolean extra, String compl){
+	/*  HTML : Status line */
+	public String statusLine(boolean extra, String compl){
 		
 		String r0 = "HTTP/1.1" + " 200 OK " + "\r\n"
 				+ "Server : Web Server \r\n"
@@ -31,65 +31,56 @@ public class HTTPReply {
 	}
 
 
-	/*  HTML header TOP */
-	public String htmlHeaderTop(String title){
+
+	/*  HTML : Body TOP */
+	public String bodyTop(String title, String sentence){
 
 		String r1 = "<HTML> \r\n"
 				+ "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"> \r\n"
 				+ "<HEAD> \r\n"
 				+ "<TITLE>"+ title +"</TITLE>\r\n"
 				+ "</HEAD>\r\n";
-		return r1;
+
+		String r2 = "<BODY BGCOLOR=\"#FDF5E6\"> \r\n"
+				+ "<H1 ALIGN=\"CENTER\">" + title + "</H1> \r\n"
+				+ sentence + "\r\n"
+				+ "<PRE> \r\n";
+
+		return (r1+r2);
 	}
-
-
-	/*  HTML header DOWN */
-	public String htmlHeaderDown(){
+	/*  HTML : Body DOWN */
+	public String bodyDown(){
 
 		String r3 = "</PRE> \r\n"
 				+ "</BODY> \r\n"
 				+ "</HTML> \r\n";
 		return r3;
 	}
-
-
-	/*  HTML header BODY */
-	public String htmlHeaderBody(String title, String sentence){
-
-		String r2 = "<BODY BGCOLOR=\"#FDF5E6\"> \r\n"
-				+ "<H1 ALIGN=\"CENTER\">" + title + "</H1> \r\n"
-				+ sentence + "\r\n"
-				+ "<PRE> \r\n";
-		return r2;		
-
-	}
 		
 		
 
 
+	/*  Identification : Submit form  */
+	public String getLogIn(String test, boolean extra, String compl){
 
-	/*  Submit form  */
-	public String getForm(String test, boolean extra, String compl){
-
-		String f = htmlHeader(extra, compl)
-					+ htmlHeaderTop("Identification")
-					+ htmlHeaderBody("Identification", "Please, provide your login and password :")
-					+ form(test)
-					+ htmlHeaderDown();
+		String f = statusLine(extra, compl)
+					+ bodyTop("Identification", "Please, provide your login and password :")
+					+ logIn(test)
+					+ bodyDown();
 		return f;
 	}
-
-	public String form(String test){
+	/*  logIn  */
+	public String logIn(String test){
 
 		String form = "<!DOCTYPE html> \r\n"
 					+ "<html> \r\n"
 					+ "<body> \r\n"
-					+ "<form action=\"identification.html\" method=\"POST\">\r\n"
+					+ "<form action=\"viewPosts.html\" method=\"POST\">\r\n"
 					+ "Login:<br> \r\n"
 					+ "<input type=\"text\" name=\"login\" value=\"\"> \r\n"  
 					+ "<br> \r\n"
 					+ "Password:<br> \r\n"
-					+ "<input type=\"text\" name=\"pass\" value=\"\">\r\n" 
+					+ "<input type=\"password\" name=\"pass\" value=\"\">\r\n" 
 					+ "<br><br>\r\n"
 					+ "<input type=\"submit\" value=\"Submit\">\r\n"
 					+ "</form> \r\n"
@@ -105,28 +96,43 @@ public class HTTPReply {
 
 
 
+	/*  viewPosts  */
+	public String getViewPosts(){
 
-	public String viewPost(){
+		String posts = statusLine(false, " ")
+						+ bodyTop("ViewPosts", "The ten last posts are  :")
+						+ viewPosts()
+						+ bodyDown();
+		return posts;
+	}
+	/*  Display messages  */
+	public String viewPosts(){
 
+		Messages chat = new Messages();
+		String[] temp = chat.getMessages();
+		System.out.println("CHAT : " + temp[0]);
 
 
 		String msg = "<!DOCTYPE html> \r\n"
 					+ "<html> \r\n"
 					+ "<body> \r\n"
+					+ "<form action=\"viewPosts.html\"> \r\n" 
+        		//	+ "<form action=\"viewPosts.html\" id=\"usrform\"> \r\n"
+  				//	+ "<input type=\"submit\"> \r\n"
+				//	+ "</form> \r\n"
+				//	+ "<br> \r\n"
+        		//	+ "<textarea rows=\"4\" cols=\"50\" name=\"comment\" form=\"usrform\">\r\n"
+				//	+ "Enter text here...</textarea>\r\n"
 					+ "<p>Bonjour, je teste.</p> \r\n"
 					+ "<p>M'as-tu vu?.</p> \r\n"
+				//	+ "<p> "
+				//	+ temp[0]
+				//	+ "</p> \r\n"
+					+ "<a href=\"http://localhost:8001/postMessage.html\">New message</a>\r\n"
 					+ "</body> \r\n"
-					+ "</html> \r\n\r\n";
+					+ "</html> \r\n";
 
-		String header = htmlHeader(false, " ")
-						+ htmlHeaderTop("ViewPosts")
-						+ htmlHeaderBody("ViewPosts", "The ten last posts are  :")
-						+ msg
-						+ htmlHeaderDown();
-
-
-
-		return header;
+		return msg;
 	}
 
 
@@ -138,67 +144,5 @@ public class HTTPReply {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/*  Redirect order to viewPosts.html  */
-/*	public String redirectViewPosts(){
-
-		String rep = "HTTP/1.1 303 See Other \r\n"
-					+ "Location : http://localhost:8001/viewPosts.html \r\n";
-		return rep;
-	}
-*/
-
-
-
-
-
-
-
-	/*  Display 10 posts  */
-/*	public String viewPosts(){
-
-		String msg = headerTOP();
-
-		msg += LESPOSTES + headerDOWN();
-
-
-	}
-
-*/
-
-
-
-
-
-
-
-/*
-
-		String r0 = splitString[indexVersion] + " " + code + "\r\n"
-				+ "Server : EchoServer \r\n"
-				+ "Content-Type: text/html \r\n"
-				+ "Content-Length: " + rep.getBytes().length + "\r\n\r\n";
-*/
 
 

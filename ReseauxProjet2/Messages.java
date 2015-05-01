@@ -1,8 +1,6 @@
-
 import java.net.*;
 import java.io.*;
 import java.util.*;
-
 
 public class Messages {
 
@@ -19,23 +17,20 @@ public class Messages {
 		msg = new String[MAXMESSAGES];
 	}
 
-
 	/*  addMessage  */
 	public static void addMessage(String element) {
 
 		if (index == MAXMESSAGES)
 			increasedSize();
 
-		msg[index] = new String (element); 
+		msg[index] = new String (element);
 		index++;
 	}
-
 
 	/*  getMessages  */
 	public static String[] getMessages() {
 		return msg;
 	}
-
 
 	/*  increasedsize  */
 	public static void increasedSize(){
@@ -51,13 +46,8 @@ public class Messages {
         msg = temp;
 	}
 
-
 	/*  getLastIndex  */
 	public static int getLastIndex(){
 		return index;
 	}
-
 }
-
-
-

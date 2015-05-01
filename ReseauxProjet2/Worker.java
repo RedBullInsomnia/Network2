@@ -1,17 +1,16 @@
-
 import java.net.*;
 import java.io.*;
 import java.util.*;
 import java.lang.Thread;
 
 /**
-* Class Worker : 
+* Class Worker :
 *   This class interacts with the user (in the client application)
-*   and communicate with the server
+*   and communicates with the server
 *
 */
 public class Worker extends Thread{
-    
+
     Socket s;
     private int NumWorker;
 
@@ -20,18 +19,14 @@ public class Worker extends Thread{
     // Session user
     private Sessions user;
 
-
-
-
     /*  Constructor  */
     Worker(Socket s, int nw) {
         this.s = s;
-        NumWorker = nw; 
+        NumWorker = nw;
         rep = new HTTPReply();
-        user = new Sessions(); 
+        user = new Sessions();
     }
 
-    
     /**   Run method  **/
     @Override
     public void run() {
@@ -40,7 +35,6 @@ public class Worker extends Thread{
             // Get socket writing and reading streams
             OutputStream out = s.getOutputStream();
             InputStream in = s.getInputStream();
-        
 
             // Read HTTP request from browser
             HTTPRequest req = new HTTPRequest(s);
@@ -50,7 +44,6 @@ public class Worker extends Thread{
                 System.out.println("BAD REQUEST : " + req.checkRequest());
             }
 
-
             // New test : GET
             if ( req.getMethod().equals("GET") )
             {
@@ -58,7 +51,7 @@ public class Worker extends Thread{
                 {
                     String f = rep.getLogIn(" ", false, " ");
                     out.write(f.getBytes(), 0, (f.getBytes()).length);
-                    out.flush();      
+                    out.flush();
                 }
                 else if ( req.getURL().equals("/viewPosts.html") )
                 {
@@ -79,10 +72,9 @@ public class Worker extends Thread{
                 }
             }
 
-
             // POST
-             if (req.getMethod().equals("POST")) {
-                
+            if (req.getMethod().equals("POST")) {
+
                 if ( req.getURL().equals("/viewPosts.html") )
                 {
                     // Check account :
@@ -117,21 +109,11 @@ public class Worker extends Thread{
                 {
 
                 }
-                
             }
-
-
-
-
-
-
-
-
-
         }
         catch (SocketTimeoutException e1) {
             System.out.println("Socket Timeout (worker : " + NumWorker + ") " + e1.getMessage());
-        } 
+        }
         catch(IOException e2){
             System.err.println("Error in/out " + e2.getMessage());
             e2.printStackTrace();
@@ -139,7 +121,7 @@ public class Worker extends Thread{
         catch(Exception e3){
             System.err.println("Error in worker : " + NumWorker);
             e3.printStackTrace();
-        }       
+        }
        // Close the connections and streams
         finally {
              try{
@@ -148,7 +130,6 @@ public class Worker extends Thread{
             catch (IOException e) {
                 System.err.println("Socket cannot close" + e.getMessage());
             }
-        } 
+        }
     }
-
 }

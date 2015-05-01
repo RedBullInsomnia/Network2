@@ -1,30 +1,28 @@
-
 import java.net.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.io.*;
 
 /**
-* Class Server : 
-* 	Received all the connections from clients
+* Class Server :
+* 	Receives all the connections from clients
 *
 */
 public class WebServer {
-	
+
 	private static ServerSocket ss;
 	private static final int nbPort = 8001;
 	private static int maxThreads;
 
-
 	/**   Main method	**/
 	public static void main(String[] args) {
 
-		// Argument on the command line 
+		// Argument on the command line
 		if (args.length != 1){
 			System.err.println("ERROR : Argument on the command line");
 			return;
 		}
-		maxThreads = Integer.parseInt(args[0]);//args[0];
+		maxThreads = Integer.parseInt(args[0]);
 
 		try {
 			ss = new ServerSocket(nbPort);
@@ -36,7 +34,7 @@ public class WebServer {
 		}
 
 		System.out.println("+ SERVER CONNECTED + \n");
-		
+
 		// Manage multiple requests
 		ExecutorService service = Executors.newFixedThreadPool(maxThreads);
 		int nw = 1;
@@ -49,13 +47,13 @@ public class WebServer {
 				service.execute(new Worker(ws, nw));
 				nw++;
 			}
-		}	
+		}
 		catch (IOException e2) {
 			System.err.println("Failed to accept connection: ");
 			e2.printStackTrace();
 			System.exit(2);
-		}		 
-		
+		}
+
 		// Close the connections and streams
 		finally{
 			try{
@@ -68,6 +66,3 @@ public class WebServer {
 		}
 	}
 }
-
-			
-			

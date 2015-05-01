@@ -1,4 +1,3 @@
-
 import java.net.*;
 import java.io.*;
 import java.lang.Thread;
@@ -6,12 +5,12 @@ import java.util.regex.Pattern;
 
 
 /**
-* Class HTTPRequest : 
-* 	Received the requests of client
+* Class HTTPRequest :
+* 	Receives the requests of client
 *
 */
 public class HTTPRequest {
-	
+
 	private String header; // message without the first line
 	private String splitString[] = null;
 	private final static int sizeBuffer = 164;
@@ -23,18 +22,14 @@ public class HTTPRequest {
 	static String badRequest = "400 Bad Request";
 	static String notImplemented = "501 Not Implemented";
 	static String httpVersionNotSupported = "505 HTTP Version Not Implemented";
-    
-
 
 	/*  Constructor  */
-	HTTPRequest(Socket s) throws IOException { 
+	HTTPRequest(Socket s) throws IOException {
 		log = new String();
 		pass = new String();
 		getRequest(s);
 		postMessages = new Messages();
 	}
-
-
 
 	/*  getRequest  */
 	public void getRequest(Socket s) throws IOException {
@@ -44,7 +39,7 @@ public class HTTPRequest {
 		String bufferString = "";
 
 		// Read request and put into buffer
-        InputStream in = s.getInputStream();
+    InputStream in = s.getInputStream();
 		byte buffer[] = new byte[sizeBuffer];
 
 		while (true) {
@@ -54,8 +49,8 @@ public class HTTPRequest {
 					break;
 			bufferString += new String(buffer, 0, len);
 
-			if (bufferString.contains("\r\n\r\n")) { 
-					
+			if (bufferString.contains("\r\n\r\n")) {
+
 					// Decomposition of the request
 					request = bufferString.substring(0, bufferString.indexOf("\r\n\r\n") + 4);
 					// Check if the request of client finish with "\r\n\r\n" or not
@@ -67,7 +62,7 @@ public class HTTPRequest {
 						bufferString = "";
 						//System.out.println("TEST2 : " + bufferString);
 					}
-					
+
 					// request = HTTP request + header : So we decompose
 					splitRequest(request);
 					splitHeader(request);
@@ -81,7 +76,6 @@ public class HTTPRequest {
 						break;
 					}
 
-
 					if (bufferString.equals("")) {
 		        		if (!isPostRequest)
 		        			break;
@@ -93,23 +87,16 @@ public class HTTPRequest {
 		        			continue;
 		        		}
 		        	}
-		     
-	
+
 					// Check keep alive
-					if (!request.contains("Connection: keep-alive")) { 
+					if (!request.contains("Connection: keep-alive")) {
 						System.out.println("Close worker number");
 						break;
 					}
-
 			}
-
-		} 
-		
-
-        System.out.println("J'ai fini"); 
+		}
+    System.out.println("J'ai fini");
 	}
-
-
 
 	/*  Split HTTP request  */
 	public void splitRequest(String msg){
@@ -125,8 +112,6 @@ public class HTTPRequest {
 
 	}
 
-
-
 	/*  Split message  */
 	public void splitHeader(String msg){
 
@@ -135,34 +120,30 @@ public class HTTPRequest {
 		//splitString = tmp.split("\\s");
 	}
 
-
-
 	/*  Check validity of request  */
 	public String checkRequest(){
-		
+
 		if ( ! (getMethod().equals("GET") || getMethod().equals("POST")) ) { return notImplemented; }
 		else if (! (getURL().startsWith("/") || getHeader().contains("Host")) ) { return badRequest; }
 		else if (!getVersion().equals("HTTP/1.1")) { return httpVersionNotSupported; }
 		else {
 			return ok;
 		}
-	} 
-
-
+	}
 
 	public void bodyRequest(String body){
 
 		Pattern pat = Pattern.compile("=");
 		String test[] = null;
 		test = pat.split(body);
-		
+
 		// Login and password
 		if (test[0].equals("login"))
 		{
 			// Computation of regex
 			Pattern p = Pattern.compile("&");
 			String extract1[] = null;
-			extract1 = p.split(body); // extract1[0] = "login=XXX" - extract1[1] = "pass=XXX" 
+			extract1 = p.split(body); // extract1[0] = "login=XXX" - extract1[1] = "pass=XXX"
 			// login
 			Pattern p2 = Pattern.compile("=");
 			String extract2[] = null;
@@ -195,8 +176,6 @@ public class HTTPRequest {
 		else
 			System.out.println("It's a problem !");
 	}
-	
-
 
 	/*  get methods  */
 
@@ -206,7 +185,7 @@ public class HTTPRequest {
 
 	public String getMethod(){
 		// GET or POST
-		return splitString[0]; 
+		return splitString[0];
 	}
 
 	public String getURL(){
@@ -228,9 +207,4 @@ public class HTTPRequest {
 		return postMessages.getMessages();
 	}
 
-
-
-} // end class
-
-
-	
+}

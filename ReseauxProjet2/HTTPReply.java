@@ -1,23 +1,20 @@
-
 import java.net.*;
 import java.io.*;
 
 /**
-* Class HTTPReply : 
-* 	This class return a response format for the client
+* Class HTTPReply :
+* 	This class returns a response format for the client
 *
 */
 public class HTTPReply {
 
-
 	/*  Constructor  */
-	HTTPReply() {	
-	}	
-
+	HTTPReply() {
+	}
 
 	/*  HTML : Status line */
 	public String statusLine(boolean extra, String compl){
-		
+
 		String r0 = "HTTP/1.1" + " 200 OK " + "\r\n"
 				+ "Server : Web Server \r\n"
 				+ "Content-Type: text/html \r\n";
@@ -46,8 +43,9 @@ public class HTTPReply {
 				+ sentence + "\r\n"
 				+ "<PRE> \r\n";
 
-		return (r1+r2);
+		return (r1 + r2);
 	}
+
 	/*  HTML : Body DOWN */
 	public String bodyDown(){
 
@@ -56,9 +54,6 @@ public class HTTPReply {
 				+ "</HTML> \r\n";
 		return r3;
 	}
-		
-		
-
 
 	/*  Identification : Submit form  */
 	public String getLogIn(String test, boolean extra, String compl){
@@ -77,10 +72,10 @@ public class HTTPReply {
 					+ "<body> \r\n"
 					+ "<form action=\"viewPosts.html\" method=\"POST\">\r\n"
 					+ "Login:<br> \r\n"
-					+ "<input type=\"text\" name=\"login\" value=\"\"> \r\n"  
+					+ "<input type=\"text\" name=\"login\" value=\"\"> \r\n"
 					+ "<br> \r\n"
 					+ "Password:<br> \r\n"
-					+ "<input type=\"password\" name=\"pass\" value=\"\">\r\n" 
+					+ "<input type=\"password\" name=\"pass\" value=\"\">\r\n"
 					+ "<br><br>\r\n"
 					+ "<input type=\"submit\" value=\"Submit\">\r\n"
 					+ "</form> \r\n"
@@ -92,10 +87,6 @@ public class HTTPReply {
 		return form;
 	}
 
-
-
-
-
 	/*  viewPosts  */
 	public String getViewPosts(String[] listMessages){
 
@@ -105,15 +96,16 @@ public class HTTPReply {
 						+ bodyDown();
 		return posts;
 	}
+
 	/*  Display messages  */
 	public String viewPosts(String[] listMessages){
 
 		String msg = "<!DOCTYPE html> \r\n"
 					+ "<html> \r\n"
 					+ "<body> \r\n"
-					+ "<form action=\"viewPosts.html\"> \r\n" 
+					+ "<form action=\"viewPosts.html\"> \r\n"
 					+ "<p> ";
-		for (int i=0; i<listMessages.length; i++)
+		for (int i = 0; i<listMessages.length; i++)
 				msg += listMessages[i] + "</p> \r\n";
 
 		String msgNext	= "<a href=\"http://localhost:8001/postMessage.html\">New message</a>\r\n"
@@ -122,8 +114,6 @@ public class HTTPReply {
 
 		return (msg + msgNext);
 	}
-
-
 
 	/*  postMessage  */
 	public String getPostMessage(){
@@ -134,6 +124,7 @@ public class HTTPReply {
 						+ bodyDown();
 		return st;
 	}
+
 	/*  body postMessage  */
 	public String postMessage(){
 
@@ -152,10 +143,6 @@ public class HTTPReply {
 		return msg;
 	}
 
-
-
-
-
 	/*  Page not implemented  */
 	public String getNotImplemented(){
 
@@ -164,15 +151,4 @@ public class HTTPReply {
 					+ bodyDown();
 		return f;
 	}
-
-
-
-
-} // end class
-
-
-
-
-
-
-
+}

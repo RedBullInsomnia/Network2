@@ -1,13 +1,9 @@
-
-//import javax.servlet.http.Cookie;
 import java.util.Hashtable;
 import java.net.*;
 import java.io.*;
 import java.lang.*;
 
-
 public class Sessions {
-
 
 	// Database of users
 	private static Hashtable<String,String> accounts = new Hashtable<String,String>();
@@ -17,17 +13,11 @@ public class Sessions {
 		accounts.put("Hiard","itagpw?");
 		accounts.put("Kurose","&Ross");
 	}
-	
-
 
 	/* Constructor */
 	public Sessions() {
-	
+
 	}
-
-
-
-
 
 	/* identification */
 	public int identification(String log, String pass) {
@@ -36,7 +26,7 @@ public class Sessions {
 		if (accounts.get(log) != null && accounts.get(log).equals(pass)){
 			//Cookie ID = new Cookie(log, pas); // Comment associer le meme cookie pour le meme navigateur ?
 			//getCookie(?, ?);
-			
+
 			return 0;
 		}
 		// Wrong login
@@ -48,10 +38,4 @@ public class Sessions {
 			return 2;
 		}
 	}
-
-
-
-
-
-
-} 
+}

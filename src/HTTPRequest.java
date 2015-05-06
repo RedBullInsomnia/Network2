@@ -54,8 +54,7 @@ public class HTTPRequest {
 				// Check if the request of client finish with "\r\n\r\n" or not
 				if (!bufferString.endsWith("\r\n\r\n")) {
 					// System.out.println("TEST3 : " + bufferString);
-					bufferString = bufferString.substring(bufferString
-							.indexOf("\r\n\r\n") + 4);
+					bufferString = bufferString.substring(bufferString.indexOf("\r\n\r\n") + 4);
 				} else {
 					bufferString = "";
 					// System.out.println("TEST2 : " + bufferString);

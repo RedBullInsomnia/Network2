@@ -31,12 +31,11 @@ public class HTTPReply {
 		String r1 = "<HTML> \r\n"
 				+ "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"> \r\n"
 				+ "<HEAD> \r\n" + "<TITLE>" + title + "</TITLE>\r\n"
-				+ "</HEAD>\r\n";
-
-		String r2 = "<BODY BGCOLOR=\"#FDF5E6\"> \r\n" + "<H1 ALIGN=\"CENTER\">"
+				+ "</HEAD>\r\n"
+				+ "<BODY BGCOLOR=\"#FDF5E6\"> \r\n" + "<H1 ALIGN=\"CENTER\">"
 				+ title + "</H1> \r\n" + sentence + "\r\n" + "<PRE> \r\n";
 
-		return (r1 + r2);
+		return r1;
 	}
 
 	/* HTML : Body DOWN */
@@ -81,6 +80,7 @@ public class HTTPReply {
 		String posts = statusLine(false, " ")
 				+ bodyTop("ViewPosts", "The ten last posts are  :")
 				+ viewPosts(arrayList) + bodyDown();
+
 		return posts;
 	}
 
@@ -89,10 +89,9 @@ public class HTTPReply {
 
 		String msg = "<!DOCTYPE html> \r\n" + "<html> \r\n" + "<body> \r\n"
 				+ "<form action=\"viewPosts.html\"> \r\n" + "<p> ";
-		Iterator<String> it = arrayList.iterator();
-		while(it.hasNext())
-		{
-			msg += it + "<p> \r\n";
+
+		for (int i=0; i<arrayList.size(); ++i) {
+			msg += arrayList.get(i) + "<p> \r\n";
 		}
 
 		String msgNext = "<a href=\"http://localhost:8001/postMessage.html\">New message</a>\r\n"

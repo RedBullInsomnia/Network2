@@ -13,6 +13,7 @@ public class Worker extends Thread {
 	private int NumWorker;
 	private HTTPReply rep;
 	private Sessions user;
+	private boolean cookieIdentif;
 
 	/* Constructor */
 	Worker(Socket s, int nw) {
@@ -26,10 +27,17 @@ public class Worker extends Thread {
 	@Override
 	public void run() {
 
-		try {
+		try{
 			// Get socket writing and reading streams
 			OutputStream out = s.getOutputStream();
 			InputStream in = s.getInputStream();
+		
+
+
+
+
+			// OLD VERSION
+
 
 			// Read HTTP request from browser
 			HTTPRequest req = new HTTPRequest(s);
@@ -38,6 +46,24 @@ public class Worker extends Thread {
 			if (req.checkRequest() != "200 OK") {
 				System.out.println("BAD REQUEST : " + req.checkRequest());
 			}
+
+			// Check if available cookie
+	/*		while (!cookieIdentif) {
+				if ( (req.getHeader()).contains("Cookie:") ) {
+					cookieIdentif = true;
+					break;
+				}
+				if (req.getURL().equals("/")) {
+					// Check account :
+					String account = user.checkAccount(req.getLog(), req.getPass(), req.getMessages());
+					out.write(account.getBytes(), 0, (account.getBytes()).length);
+					out.flush();
+				}
+			}
+	*/
+
+			// Identification done
+
 
 			// New test : GET
 			if (req.getMethod().equals("GET")) {
@@ -64,33 +90,25 @@ public class Worker extends Thread {
 			if (req.getMethod().equals("POST")) {
 
 				if (req.getURL().equals("/viewPosts.html")) {
+				
 					// Check account :
-					if (user.Identification(req.getLog(), req.getPass()) == 2) {
-						System.out.println("Wrong password");
-						String f = rep.getLogIn("Wrong password", false, " ");
-						out.write(f.getBytes(), 0, (f.getBytes()).length);
-						out.flush();
-					} else if (user.Identification(req.getLog(), req.getPass()) == 1) {
-						System.out.println("Wrong login");
-						String f = rep.getLogIn("Wrong login", false, " ");
-						out.write(f.getBytes(), 0, (f.getBytes()).length);
-						out.flush();
-					} else { // ok
-						System.out.println("It's OK ");
-						// Cookie
-						Cookies cook = new Cookies();
-						String compl = cook.setCookie(req.getLog(),
-								cook.getCookie(req.getLog()));
-						// afficher la page suivante
-
-						String f = rep.getViewPosts(req.getMessages());
-						out.write(f.getBytes(), 0, (f.getBytes()).length);
-						out.flush();
-					}
+					Messages.addMessage("No message");
+					//System.out.println("Les messages sont : " + req.getMessages());
+					String account = user.checkAccount(req.getLog(), req.getPass(), req.getMessages());
+					out.write(account.getBytes(), 0, (account.getBytes()).length);
+					out.flush();
+				
 				} else if (req.getURL().equals("/postMessage.html")) {
 
 				}
 			}
+
+
+
+
+
+
+
 		} catch (SocketTimeoutException e1) {
 			System.out.println("Socket Timeout (worker : " + NumWorker + ") "
 					+ e1.getMessage());

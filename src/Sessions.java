@@ -15,12 +15,13 @@ public class Sessions {
 		accounts.put("Hiard", "itagpw?");
 		accounts.put("Kurose", "&Ross");
 	}
+	
+	private boolean logged;
 
 	/*
 	 * Constructor 
 	 */
 	public Sessions() {
-
 	}
 
 	/*
@@ -33,12 +34,15 @@ public class Sessions {
 	public int Identification(String login, String pass) {
 
 		if (accounts.get(login) != null && accounts.get(login).equals(pass)) {
+			logged = true;
 			return 0; // Correct ID
 		}
 		else if (accounts.get(login) == null) {
+			logged = false;
 			return 1; // Wrong login
 		}
 		else {
+			logged = false;
 			return 2; // Wrong password
 		}
 	}

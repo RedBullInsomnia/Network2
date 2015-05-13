@@ -3,23 +3,19 @@ import java.util.ArrayList;
 /**
  * Class Messages
  * 
- * @author hwk
+ * @author hwk, mcz
  *
  */
 public class Messages {
 
 	public static final int initialCapacity = 20;
-	public static ArrayList<String> messages;
-	public static int length;
+	public static ArrayList<String> messages = new ArrayList<String>(initialCapacity);
+	public static int length = 0;
 
 	/*
 	 * Constructor
 	 */
-	Messages() {
-
-		length = 0;
-		messages = new ArrayList<String>(initialCapacity);
-	}
+	private Messages() { }
 
 	/*
 	 * AddMessage adds a message
@@ -39,4 +35,11 @@ public class Messages {
 	public static int getLastMessage() {
 		return length;
 	}
+
+	/* isEmpty */
+	public static boolean isEmpty() {
+		return messages.isEmpty();
+	}
+
+
 }

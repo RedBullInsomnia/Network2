@@ -8,7 +8,7 @@ public class Cookies {
 	 * getCookie returns the cookie corresponding to a key, if not a new pair
 	 * <key, cookie> is created
 	 */
-	public UUID getCookie(String key) {
+	public static UUID getCookie(String key) {
 
 		if (!cook.containsKey(key))
 			cook.put(key, randomID()); // Create a new cookie value
@@ -19,7 +19,7 @@ public class Cookies {
 	/*
 	 * randomID
 	 */
-	public UUID randomID() {
+	public static UUID randomID() {
 
 		// UUID class provides a simple mean for generating unique ids
 		UUID id = UUID.randomUUID();
@@ -30,19 +30,26 @@ public class Cookies {
 	/*
 	 * setCookie
 	 */
-	public String setCookie(String key, UUID value) {
+	public static String setCookie(String key, UUID value) {
 
-		String setCookie = "Set-Cookie: " + key + "=" + value + "; " + "path=/";
-		return setCookie;
+		return "Set-Cookie: " + key + "=" + value + "; path=/\r\n";
 	}
 
 	/*
 	 * deleteCookie
 	 */
-	public String deleteCookie(String key) {
+	public static String deleteCookie(String key) {
 
 		String deleteCookie = "Set-Cookie: " + key
-				+ "=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+				+ "=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT\r\n";
 		return deleteCookie;
+	}
+
+	public static boolean containsValue(UUID value) {
+		
+		if (cook.containsValue(value))
+			return true;
+		
+		return false;
 	}
 }

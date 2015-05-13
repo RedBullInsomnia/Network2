@@ -1,209 +1,101 @@
-import java.net.*;
-import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.regex.Pattern;
 
 /**
- * Class HTTPRequest : Receives the requests of client
+ * HTTPRequest class
+ * 
+ * @author hwk, mcz
  *
  */
 public class HTTPRequest {
 
-	private String header; // message without the first line
-	private String splitString[] = null;
-	private final static int sizeBuffer = 164;
-	private String log;
-	private String pass;
-	// private Messages postMessages;
-	// Http Code
-	static String ok = "200 OK";
-	static String badRequest = "400 Bad Request";
-	static String notImplemented = "501 Not Implemented";
-	static String httpVersionNotSupported = "505 HTTP Version Not Implemented";
-
-	/* Constructor */
-	HTTPRequest(Socket s) throws IOException {
-		log = new String();
-		pass = new String();
-		getRequest(s);
-		// postMessages = new Messages();
+	public static String getLoginPage(int status) {
+		String page = getBodyTop("Identification",
+				"Please provide your login and password :")
+				+ getLoginForm(status) + getBodyDown();
+		return page;
 	}
 
-	/* getRequest */
-	public void getRequest(Socket s) throws IOException {
-		boolean isPostRequest = false;
-		String request;
-		String bufferString = "";
+	public static String getPostsPage(int pageNum, int maxPosts) {
+		
+		String page = getBodyTop("View posts", "The " + maxPosts + " last posts are :")
+				+ getViewPosts(pageNum, maxPosts) 
+			+ getBodyDown();
+		
+		return page;
+	}
+	
 
-		// Read request and put into buffer
-		InputStream in = s.getInputStream();
-		byte buffer[] = new byte[sizeBuffer];
+	public static String getViewPosts(int pageNum, int maxPosts) {
 
-		while (true) {
+		ArrayList<String> arrayList = Messages.getMessages();
+		
+		//String msg = "<form action=\"viewPosts.html\">\r\n";
+		String msg = "";
+		int i = arrayList.size() - pageNum*maxPosts;
+		if (i < 0)
+			i = 0;
+		for (int j = 0; j < maxPosts && (i+j) < arrayList.size(); ++j)
+			msg += "<p>" + arrayList.get(i + j) + "<p>\r\n";
 
-			int len = in.read(buffer);
-			if (len <= 0)
-				break;
-			bufferString += new String(buffer, 0, len);
+		msg += "<a href=\"/postMessage.html\">New message</a>\r\n";
 
-			if (bufferString.contains("\r\n\r\n")) {
-
-				// Decomposition of the request
-				request = bufferString.substring(0,
-						bufferString.indexOf("\r\n\r\n") + 4);
-				// Check if the request of client finish with "\r\n\r\n" or not
-				if (!bufferString.endsWith("\r\n\r\n")) {
-					// System.out.println("TEST3 : " + bufferString);
-					bufferString = bufferString.substring(bufferString
-							.indexOf("\r\n\r\n") + 4);
-				} else {
-					bufferString = "";
-					// System.out.println("TEST2 : " + bufferString);
-				}
-
-				// request = HTTP request + header : So we decompose
-				splitRequest(request);
-				splitHeader(request);
-				isPostRequest = getMethod().equals("POST");
-
-				System.out.println("bufferString : " + bufferString);
-				System.out.println("header : " + request);
-
-				if (isPostRequest) {
-					bodyRequest(bufferString);
-					break;
-				}
-
-				if (bufferString.equals("")) {
-					if (!isPostRequest)
-						break;
-					else if (isPostRequest)
-						break;
-					else {
-						System.out.println("BLANK LINE : ");
-						continue;
-					}
-				}
-
-				// Check keep alive
-				if (!request.contains("Connection: keep-alive")) {
-					System.out.println("Close worker number");
-					break;
-				}
-			}
-		}
-		System.out.println("J'ai fini");
+		return msg;
 	}
 
-	/* Split HTTP request */
-	public void splitRequest(String msg) {
+	public static String getBodyTop(String title, String message) {
+		String r1 = "<HTML>\r\n"
+				+ "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\r\n"
+				+ "<HEAD>\r\n" + "<TITLE>" + title + "</TITLE>\r\n"
+				+ "</HEAD>\r\n";
 
-		// Take the first line of the request :
-		// Computation of regex
-		Pattern p = Pattern.compile("\r\n");
-		String linesRequest[] = null;
-		linesRequest = p.split(msg);
-		// Sparse first line :
-		Pattern p2 = Pattern.compile(" ");
-		splitString = p2.split(linesRequest[0]);
+		String r2 = "<BODY BGCOLOR=\"#FDF5E6\"> \r\n" + "<H1 ALIGN=\"CENTER\">"
+				+ title + "</H1> \r\n" + message + "\r\n" + "<PRE>\r\n";
 
+		return r1 + r2;
 	}
 
-	/* Split message */
-	public void splitHeader(String msg) {
-
-		header = msg;// String tmp = msg.substring(0, msg.indexOf("\r\n"));
-		// System.out.println("TEST : " + req);
-		// splitString = tmp.split("\\s");
+	public static String getBodyDown() {
+		return "</PRE>\r\n" + "</BODY>\r\n" + "</HTML>\r\n";
 	}
 
-	/* Check validity of request */
-	public String checkRequest() {
-
-		if (!(getMethod().equals("GET") || getMethod().equals("POST"))) {
-			return notImplemented;
-		} else if (!(getURL().startsWith("/") || getHeader().contains("Host"))) {
-			return badRequest;
-		} else if (!getVersion().equals("HTTP/1.1")) {
-			return httpVersionNotSupported;
-		} else {
-			return ok;
-		}
+	public static String getLoginForm() {
+		return getLoginForm(0);
 	}
 
-	public void bodyRequest(String body) {
+	public static String getLoginForm(int status) {
+		String form = "<form action=\"loginAction\" method=\"POST\">\r\n"
+				+ "Login:<br> \r\n"
+				+ "<input type=\"text\" name=\"login\" value=\"\"> \r\n"
+				+ "<br> \r\n" + "Password:<br> \r\n"
+				+ "<input type=\"password\" name=\"pass\" value=\"\">\r\n"
+				+ "<br><br>\r\n"
+				+ "<input type=\"submit\" value=\"Submit\">\r\n"
+				+ "</form> \r\n";
 
-		Pattern pat = Pattern.compile("=");
-		String test[] = null;
-		test = pat.split(body);
+		if (1 == status)
+			form += "<p> Wrong login </p>\r\n";
+		else if (2 == status)
+			form += "<p> Wrong passwrod </p>\r\n";
 
-		// Login and password
-		if (test[0].equals("login")) {
-			// Computation of regex
-			Pattern p = Pattern.compile("&");
-			String extract1[] = null;
-			extract1 = p.split(body); // extract1[0] = "login=XXX" - extract1[1]
-										// = "pass=XXX"
-			// login
-			Pattern p2 = Pattern.compile("=");
-			String extract2[] = null;
-			extract2 = p2.split(extract1[0]);
-			log = extract2[1];
+		return form;
+	}
+	
+	public static String getPostsMessage()
+	{
+		String msg = "<form action=\"viewPosts.html\" id=\"usrform\" method=\"POST\">\r\n"
+				+ "<br> \r\n"
+				+ "<textarea rows=\"4\" cols=\"50\" name=\"comment\" form=\"usrform\">\r\n"
+				+ "Enter text here...</textarea>\r\n"
+				+ "<br> \r\n"
+				+ "<input type=\"submit\"> \r\n"
+				+ "</form>\r\n";
 
-			// password
-			Pattern p3 = Pattern.compile("=");
-			String extract3[] = null;
-			extract3 = p3.split(extract1[1]);
-			pass = extract3[1];
-		}
-
-		// New message
-		else if (test[0].equals("comment")) {
-			Pattern p4 = Pattern.compile("\\+");
-			String extract4[] = null;
-			extract4 = p4.split(test[1]);
-
-			// new message
-			String newMessage = new String();
-			for (int i = 0; i < extract4.length; ++i) {
-				newMessage += extract4[i];
-			}
-			// envoyer le message à la classe message
-			Messages.addMessage(newMessage);
-		}
-
-		else
-			System.out.println("It's a problem !");
+		return msg;
 	}
 
-	/* get methods */
-
-	public String getHeader() {
-		return header;
-	}
-
-	public String getMethod() {
-		// GET or POST
-		return splitString[0];
-	}
-
-	public String getURL() {
-		return splitString[1];
-	}
-
-	public String getVersion() {
-		return splitString[2];
-	}
-
-	public String getLog() {
-		return log;
-	}
-
-	public String getPass() {
-		return pass;
-	}
-
-	public ArrayList<String> getMessages() {
-		return Messages.getMessages();
+	public static String errorPage() {
+		return getBodyTop("An error occurred", "") + getBodyDown();
 	}
 }
